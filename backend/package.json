@@ -1,0 +1,9 @@
+{
+  "name": "predictiq-backend",
+  "version": "1.0.0",
+  "description": "DataVisionAi FastAPI Backend",
+  "private": true,
+  "engines": {
+    "python": "3.11"
+  }
+}
