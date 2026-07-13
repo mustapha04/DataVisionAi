@@ -1,0 +1,7 @@
+main.py
+backend/
+frontend/
+.git/
+*.md
+requirements.txt
+runtime.txt
