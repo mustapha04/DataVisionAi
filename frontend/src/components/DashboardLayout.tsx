@@ -97,6 +97,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Dashboard
             </button>
             <button
+              onClick={() => navTo('analytics')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
+              style={isActive('/analytics') ? { background: 'var(--accent)', color: '#0a0e1a' } : { color: 'var(--muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
+              <BarChart3 size={13} />
+              Analytics
+            </button>
+            <button
               onClick={() => navTo('insights')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
               style={isActive('/insights') ? { background: 'var(--accent)', color: '#0a0e1a' } : { color: 'var(--muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}

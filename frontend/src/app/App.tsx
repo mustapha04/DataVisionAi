@@ -7,6 +7,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import LandingPage from '@/pages/landing/LandingPage';
 import UploadPage from '@/pages/datasets/UploadPage';
 import DashboardPage from '@/pages/analytics/DashboardPage';
+import AppstoreDashboardPage from '@/pages/analytics/AppstoreDashboardPage';
 import InsightsPage from '@/pages/analytics/InsightsPage';
 import ForecastPage from '@/pages/forecast/ForecastPage';
 import ChatPage from '@/pages/analytics/ChatPage';
@@ -53,6 +54,11 @@ export default function App() {
                 <DashboardLayout><DashboardPage /></DashboardLayout>
               </ProtectedRoute>
             } />
+            <Route path="/app/analytics/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout><AppstoreDashboardPage /></DashboardLayout>
+              </ProtectedRoute>
+            } />
             <Route path="/app/insights/:id" element={
               <ProtectedRoute>
                 <DashboardLayout><InsightsPage /></DashboardLayout>
@@ -76,6 +82,7 @@ export default function App() {
 
             {/* Backward compat: redirect old protected routes */}
             <Route path="/dashboard/:id" element={<Navigate to={`/app/dashboard/${window.location.pathname.split('/')[2]}`} replace />} />
+            <Route path="/analytics/:id" element={<Navigate to={`/app/analytics/${window.location.pathname.split('/')[2]}`} replace />} />
             <Route path="/insights/:id" element={<Navigate to={`/app/insights/${window.location.pathname.split('/')[2]}`} replace />} />
             <Route path="/forecast/:id" element={<Navigate to={`/app/forecast/${window.location.pathname.split('/')[2]}`} replace />} />
             <Route path="/admin" element={<Navigate to="/app/admin" replace />} />
