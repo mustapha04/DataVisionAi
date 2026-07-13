@@ -2,8 +2,16 @@ import axios from 'axios';
 import type { Dataset, KpiMetric, ChartData, ProductRow, OpportunityItem, AIInsight } from '@/types';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  timeout: 30000,
+  baseURL: import.meta.env.VITE_API_URL || 'https://datavisionai-jqka.onrender.com',
+  timeout: 120000,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('predictiq-token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export async function uploadDataset(file: File): Promise<Dataset> {
@@ -27,22 +35,38 @@ export async function deleteDataset(id: string): Promise<void> {
   await api.delete(`/api/datasets/${id}`);
 }
 
-export async function getKpis(id: string): Promise<KpiMetric[]> {
+export async function getKpis(id: string, rows: any[] = [], meta: any[] = []): Promise<KpiMetric[]> {
+  if (id.startsWith('local-') && rows.length > 0) {
+    const { data } = await api.post(`/api/datasets/${id}/kpis`, { rows, meta });
+    return data.kpis || [];
+  }
   const { data } = await api.get(`/api/datasets/${id}/kpis`);
   return data.kpis || [];
 }
 
-export async function getCharts(id: string): Promise<Record<string, ChartData>> {
+export async function getCharts(id: string, rows: any[] = [], meta: any[] = []): Promise<Record<string, ChartData>> {
+  if (id.startsWith('local-') && rows.length > 0) {
+    const { data } = await api.post(`/api/datasets/${id}/charts`, { rows, meta });
+    return data.charts || {};
+  }
   const { data } = await api.get(`/api/datasets/${id}/charts`);
   return data.charts || {};
 }
 
-export async function getProducts(id: string, sortBy = 'revenue', limit = 50): Promise<ProductRow[]> {
+export async function getProducts(id: string, sortBy = 'revenue', limit = 50, rows: any[] = [], meta: any[] = []): Promise<ProductRow[]> {
+  if (id.startsWith('local-') && rows.length > 0) {
+    const { data } = await api.post(`/api/datasets/${id}/products?sort_by=${sortBy}&limit=${limit}`, { rows, meta });
+    return data.products || [];
+  }
   const { data } = await api.get(`/api/datasets/${id}/products`, { params: { sort_by: sortBy, limit } });
   return data.products || [];
 }
 
-export async function getOpportunities(id: string): Promise<OpportunityItem[]> {
+export async function getOpportunities(id: string, rows: any[] = [], meta: any[] = []): Promise<OpportunityItem[]> {
+  if (id.startsWith('local-') && rows.length > 0) {
+    const { data } = await api.post(`/api/datasets/${id}/opportunities`, { rows, meta });
+    return data.opportunities || [];
+  }
   const { data } = await api.get(`/api/datasets/${id}/opportunities`);
   return data.opportunities || [];
 }

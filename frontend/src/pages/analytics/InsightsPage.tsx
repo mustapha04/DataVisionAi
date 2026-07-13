@@ -52,11 +52,10 @@ export default function InsightsPage() {
     setResult(null);
 
     try {
-      const isLocal = id.startsWith('local-');
       const res = await generateInsights(
         id, type,
-        isLocal ? data.rows : [],
-        isLocal ? data.meta : [],
+        data.rows || [],
+        data.meta || [],
       );
       const content = res.content;
       if (content && content.insights) {

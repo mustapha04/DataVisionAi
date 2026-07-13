@@ -6,6 +6,8 @@ import { BarChart, LineChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { BarChart3, TrendingUp, DollarSign, Download } from 'lucide-react';
 
 const COLORS = ['#00d4aa', '#3b82f6', '#f59e0b', '#ef4444', '#a78bfa', '#34d399', '#f97316', '#06b6d4'];
+const now = new Date();
+const CURRENT_MONTH = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
 interface LocalData {
   rows: any[];
@@ -154,7 +156,7 @@ export default function DashboardPage() {
   const maxOppDl = opps[0]?.downloads || 1;
 
   const kpis = [
-    { label: 'Total gross revenue', value: `$${totalRev.toFixed(0)}`, sub: 'April 2026', icon: <DollarSign size={16} /> },
+    { label: 'Total gross revenue', value: `$${totalRev.toFixed(0)}`, sub: '{CURRENT_MONTH}', icon: <DollarSign size={16} /> },
     { label: 'Estimated earnings', value: `$${totalEarn.toFixed(0)}`, sub: `${margin.toFixed(1)}% margin`, icon: <TrendingUp size={16} /> },
     { label: 'Total transactions', value: String(totalUnits), sub: `${totalRefunds} refunds`, icon: <BarChart3 size={16} /> },
     { label: 'Free downloads', value: String(freeDownloads), sub: `${freePct.toFixed(0)}% of all installs`, icon: <Download size={16} /> },
@@ -296,7 +298,7 @@ export default function DashboardPage() {
           <div className="card" style={{ marginBottom: 24, borderRadius: 14, padding: 20 }}>
             <div className="section-title" style={{ marginTop: 0, marginBottom: 16 }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--accent2)' }}></span>
-              Daily revenue trend — April 2026
+              Daily revenue trend — {CURRENT_MONTH}
             </div>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={trendData}>
@@ -386,7 +388,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="card" style={{ marginBottom: 24, borderRadius: 14, padding: 20 }}>
-              <div className="section-title" style={{ marginTop: 0 }}>Daily revenue trend — April 2026</div>
+              <div className="section-title" style={{ marginTop: 0 }}>Daily revenue trend — {CURRENT_MONTH}</div>
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={trendData}>
                 <CartesianGrid stroke="rgba(42,53,85,0.4)" strokeDasharray="3 3" />

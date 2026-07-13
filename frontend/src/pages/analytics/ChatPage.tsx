@@ -76,12 +76,11 @@ export default function ChatPage() {
     setMessages(prev => [...prev, userMsg]);
 
     try {
-      const isLocal = id.startsWith('local-');
       const history = messages.map(m => ({ role: m.role, content: m.content }));
       const res = await sendChatMessage(
         id, msg, history,
-        isLocal ? (data?.rows || []) : [],
-        isLocal ? (data?.meta || []) : [],
+        data?.rows || [],
+        data?.meta || [],
       );
 
       const assistantMsg: ChatMsg = {

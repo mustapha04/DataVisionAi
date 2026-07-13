@@ -37,10 +37,12 @@ function getLocalUser(): LocalUser | null {
 
 function setLocalUser(user: LocalUser) {
   localStorage.setItem(LOCAL_AUTH_KEY, JSON.stringify(user));
+  localStorage.setItem('predictiq-token', user.id);
 }
 
 function clearLocalUser() {
   localStorage.removeItem(LOCAL_AUTH_KEY);
+  localStorage.removeItem('predictiq-token');
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
