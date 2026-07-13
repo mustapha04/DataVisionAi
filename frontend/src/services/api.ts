@@ -47,8 +47,9 @@ export async function getOpportunities(id: string): Promise<OpportunityItem[]> {
   return data.opportunities || [];
 }
 
-export async function generateInsights(id: string, type = 'full'): Promise<AIInsight> {
-  const { data } = await api.post(`/api/datasets/${id}/insights`, null, { params: { analysis_type: type } });
+export async function generateInsights(id: string, type = 'full', rows: any[] = [], meta: any[] = []): Promise<AIInsight> {
+  const body = rows.length > 0 ? { rows, meta } : undefined;
+  const { data } = await api.post(`/api/datasets/${id}/insights`, body, { params: { analysis_type: type } });
   return data;
 }
 
@@ -75,6 +76,22 @@ export async function runForecast(id: string, dateCol: string, valueCol: string,
   } catch (err: any) {
     return { error: err?.response?.data?.detail || err.message || 'Forecast failed' };
   }
+}
+
+export async function sendChatMessage(
+  id: string,
+  message: string,
+  history: { role: string; content: string }[] = [],
+  localRows: any[] = [],
+  localMeta: any[] = [],
+): Promise<any> {
+  const { data } = await api.post(`/api/datasets/${id}/chat`, {
+    message,
+    history,
+    local_rows: localRows,
+    local_meta: localMeta,
+  });
+  return data;
 }
 
 export default api;

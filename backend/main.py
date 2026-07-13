@@ -5,7 +5,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import settings
-from routers import upload, datasets, analytics, insights, auth, cleaning, forecast, reports, admin
+from routers import upload, datasets, analytics, insights, auth, cleaning, forecast, reports, admin, export, chat
 
 app = FastAPI(title="PredictIQ API", version="1.0.0")
 
@@ -26,6 +26,8 @@ app.include_router(cleaning.router, prefix="/api", tags=["cleaning"])
 app.include_router(forecast.router, prefix="/api", tags=["forecast"])
 app.include_router(reports.router, prefix="/api", tags=["reports"])
 app.include_router(admin.router, prefix="/api", tags=["admin"])
+app.include_router(export.router, prefix="/api", tags=["export"])
+app.include_router(chat.router, prefix="/api", tags=["chat"])
 
 
 @app.get("/api/health")

@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@/app/theme';
 import { useAuth } from '@/hooks/useAuth';
-import { Moon, Sun, Upload, BarChart3, Brain, LogOut, User, TrendingUp, Shield, ArrowLeft } from 'lucide-react';
+import { Moon, Sun, Upload, BarChart3, Brain, LogOut, User, TrendingUp, Shield, ArrowLeft, MessageSquare } from 'lucide-react';
 
 const LS_KEY = 'predictiq-last-dataset-id';
 
@@ -113,6 +113,14 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Forecast
             </button>
             <button
+              onClick={() => navTo('chat')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
+              style={isActive('/chat') ? { background: 'var(--accent)', color: '#0a0e1a' } : { color: 'var(--muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}
+            >
+              <MessageSquare size={13} />
+              AI Chat
+            </button>
+            <button
               onClick={() => navigate('/app/admin')}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200"
               style={isActive('/admin') ? { background: 'var(--accent)', color: '#0a0e1a' } : { color: 'var(--muted)', background: 'transparent', border: 'none', cursor: 'pointer' }}
@@ -166,6 +174,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             { icon: BarChart3, label: 'Dashboard', path: '/app/dashboard' },
             { icon: Brain, label: 'AI', path: '/app/insights' },
             { icon: TrendingUp, label: 'Forecast', path: '/app/forecast' },
+            { icon: MessageSquare, label: 'Chat', path: '/app/chat' },
             { icon: Shield, label: 'Admin', path: '/app/admin' },
           ].map((item) => (
             <button

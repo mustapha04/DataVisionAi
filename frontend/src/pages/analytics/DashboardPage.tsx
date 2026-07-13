@@ -21,11 +21,19 @@ export default function DashboardPage() {
   const [view, setView] = useState<'overview' | 'charts' | 'table'>('overview');
   const [tableCols, setTableCols] = useState<string[] | null>(null);
   const [reportStatus, setReportStatus] = useState<string | null>(null);
+  const [showExport, setShowExport] = useState(false);
 
   useEffect(() => {
     if (!id) return;
     loadData(id);
   }, [id]);
+
+  useEffect(() => {
+    if (!showExport) return;
+    const handler = () => setShowExport(false);
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, [showExport]);
 
   async function loadData(datasetId: string) {
     setLoading(true);
@@ -177,10 +185,30 @@ export default function DashboardPage() {
           ))}
         </div>
         {id && (
-          <button className="btn btn-sm" onClick={() => downloadReport(id, data, setReportStatus)}
-            style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Download size={14} /> {reportStatus || 'PDF Report'}
-          </button>
+          <>
+            <div style={{ position: 'relative' }}>
+              <button className="btn btn-sm" onClick={(e) => { e.stopPropagation(); setShowExport(!showExport); }}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Download size={14} /> Export CSV
+              </button>
+              {showExport && (
+                <div style={{
+                  position: 'absolute', top: '100%', right: 0, marginTop: 4, zIndex: 100,
+                  background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
+                  overflow: 'hidden', minWidth: 160,
+                }}>
+                  <div style={{ padding: '10px 16px', cursor: 'pointer', fontSize: 13, color: 'var(--text)' }}
+                    onClick={() => { setShowExport(false); exportData(id!, data); }}>
+                    Export as CSV
+                  </div>
+                </div>
+              )}
+            </div>
+            <button className="btn btn-sm" onClick={() => downloadReport(id, data, setReportStatus)}
+              style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Download size={14} /> {reportStatus || 'PDF Report'}
+            </button>
+          </>
         )}
       </div>
 
@@ -491,6 +519,32 @@ async function downloadReport(
     console.error('Download failed:', err);
     setStatus(null);
     window.open(`${base}/api/datasets/${datasetId}/report`, '_blank');
+  }
+}
+
+async function exportData(datasetId: string, data: LocalData | null) {
+  const token = localStorage.getItem('predictiq-token');
+  const base = import.meta.env.VITE_API_URL || '';
+  const isLocal = datasetId.startsWith('local-');
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  try {
+    if (isLocal && data) {
+      const res = await fetch(`${base}/api/datasets/${datasetId}/export/csv`, {
+        method: 'POST', headers,
+        body: JSON.stringify({ rows: data.rows, file_name: data.fileName }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `${data.fileName.replace('.csv','')}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    } else {
+      window.open(`${base}/api/datasets/${datasetId}/export/csv`, '_blank');
+    }
+  } catch (err) {
+    console.error('Export failed:', err);
+    window.open(`${base}/api/datasets/${datasetId}/export/csv`, '_blank');
   }
 }
 

@@ -9,6 +9,7 @@ import UploadPage from '@/pages/datasets/UploadPage';
 import DashboardPage from '@/pages/analytics/DashboardPage';
 import InsightsPage from '@/pages/analytics/InsightsPage';
 import ForecastPage from '@/pages/forecast/ForecastPage';
+import ChatPage from '@/pages/analytics/ChatPage';
 import AdminPage from '@/pages/admin/AdminPage';
 import LoginPage from '@/pages/login/LoginPage';
 import RegisterPage from '@/pages/register/RegisterPage';
@@ -60,6 +61,11 @@ export default function App() {
             <Route path="/app/forecast/:id" element={
               <ProtectedRoute>
                 <DashboardLayout><ForecastPage /></DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/app/chat/:id" element={
+              <ProtectedRoute>
+                <DashboardLayout><ChatPage /></DashboardLayout>
               </ProtectedRoute>
             } />
             <Route path="/app/admin" element={
